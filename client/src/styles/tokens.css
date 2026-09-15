@@ -1,0 +1,77 @@
+:root {
+  --bg: #000000;
+  /* Exact values read from nairos.com's own computed styles (getComputedStyle
+     on their live DOM) — three opacity steps of the same dark surface color,
+     used WITHOUT blur on regular cards; blur is reserved for floating pills. */
+  --bg-glass-primary: rgba(28, 28, 30, 0.8);
+  --bg-glass-secondary: rgba(28, 28, 30, 0.72);
+  --bg-glass-tertiary: rgba(28, 28, 30, 0.64);
+  --bg-elevated: var(--bg-glass-primary);
+  --bg-card: rgb(28, 28, 30);
+  --bg-card-glass: var(--bg-glass-primary);
+  --bg-card-hover: rgba(38, 38, 40, 0.85);
+  --border: rgba(255, 255, 255, 0.16);
+  --border-soft: rgba(255, 255, 255, 0.08);
+  --gradient-stroke: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.32) 0%,
+    rgba(255, 255, 255, 0) 22.98%,
+    rgba(255, 255, 255, 0) 32.18%,
+    rgba(255, 255, 255, 0.12) 57.46%
+  );
+  --text: rgba(255, 255, 255, 0.92);
+  --text-dim: rgba(255, 255, 255, 0.64);
+  --text-faint: rgba(255, 255, 255, 0.4);
+  --accent: #4b60ff;
+  --accent-glass: rgba(75, 96, 255, 0.32);
+  --accent-soft: rgba(75, 96, 255, 0.16);
+  --accent-2: #8b5cf6;
+  --ghost-bg: rgba(116, 116, 128, 0.16);
+  --ghost-text: rgb(174, 174, 178);
+  --green: rgb(48, 209, 88);
+  --radius-sm: 10px;
+  --radius-md: 20px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
+  --shadow-depth-2: 0px 2px 3px 0px rgba(0, 0, 0, 0.04);
+  --shadow-depth-3: 0px 2px 8px -2px rgba(0, 0, 0, 0.04), 0px 4px 12px 0px rgba(0, 0, 0, 0.08);
+  --shadow-panel: 0px 0px 25px 0px rgba(0, 0, 0, 0.12), 0px 60px 90px 0px rgba(0, 0, 0, 0.24);
+  --shadow-lg: 0px 8px 24px -4px rgba(0, 0, 0, 0.3), 0px 16px 48px 0px rgba(0, 0, 0, 0.35);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Gradient-stroke "glass" border: a hairline highlight drawn with a mask-excluded
+   gradient instead of a flat border color — this is what gives cards their glassy edge.
+   Matches nairos.com's own border-gradient-v2 exactly (100deg, 1.6px). */
+.glass-border {
+  position: relative;
+}
+
+.glass-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  padding: 1.6px;
+  background: var(--gradient-stroke);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box exclude,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box exclude,
+    linear-gradient(#fff 0 0);
+  pointer-events: none;
+}
+
+/* Only the floating pills (navbar, CTA capsule) are blurred + more translucent
+   on nairos.com — regular cards use an almost-opaque fill with no blur at all. */
+.glass-pill {
+  background: var(--bg-glass-tertiary);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+
+.glass-surface {
+  background: var(--bg-card-glass);
+}

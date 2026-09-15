@@ -1,0 +1,175 @@
+.crud-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.crud-table-wrap {
+  background: var(--bg-card-glass);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.crud-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.crud-table th {
+  text-align: left;
+  padding: 12px 18px;
+  color: var(--text-faint);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-card);
+}
+
+.crud-table td {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text-dim);
+}
+
+.crud-table tr:last-child td {
+  border-bottom: none;
+}
+
+.team-role-select {
+  max-width: 130px;
+}
+
+.team-role-select .ui-select__trigger {
+  padding: 6px 10px;
+  font-size: 12.5px;
+}
+
+.crud-table td:first-child {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.crud-row-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.crud-icon-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crud-icon-btn:hover {
+  color: var(--text);
+  background: var(--bg-card-hover);
+}
+
+.crud-empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 13.5px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background: var(--bg-card-glass);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+}
+
+.stat-card__label {
+  font-size: 12.5px;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+
+.stat-card__value {
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.chart-card {
+  background: var(--bg-card-glass);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-top: 20px;
+}
+
+.chart-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 18px;
+  color: var(--text);
+}
+
+.settings-card {
+  background: var(--bg-card-glass);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 560px;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 11.5px;
+  color: var(--text-faint);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.settings-field input,
+.settings-field textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 11px 14px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  outline: none;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.settings-field .ui-select__trigger {
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.settings-field input:focus,
+.settings-field textarea:focus {
+  border-color: var(--accent);
+}
+
+.settings-saved {
+  color: #22c55e;
+  font-size: 13px;
+  margin-top: 4px;
+}

@@ -1,0 +1,108 @@
+.ui-select {
+  position: relative;
+}
+
+.ui-select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px 8px 14px;
+  border-radius: var(--radius-pill, 999px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ui-select__trigger:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ui-select__trigger--open {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.ui-select__placeholder {
+  color: var(--text-faint);
+}
+
+.ui-select__chevron {
+  flex-shrink: 0;
+  color: var(--text-faint);
+  transition: transform 0.15s ease;
+}
+
+.ui-select__trigger--open .ui-select__chevron {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+.ui-select__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 100%;
+  z-index: 40;
+  background: rgb(24, 24, 26);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 260px;
+  overflow-y: auto;
+  animation: ui-select-in 0.12s ease;
+}
+
+@keyframes ui-select-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ui-select__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ui-select__option:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text);
+}
+
+.ui-select__option--active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ui-select__option svg {
+  flex-shrink: 0;
+}

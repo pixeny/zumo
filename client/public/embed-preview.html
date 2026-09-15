@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Embed preview — not part of the Zumo app</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #0b0b0d;
+        color: #e5e5ea;
+        font-family: -apple-system, 'Segoe UI', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 60px 20px;
+      }
+      .card {
+        max-width: 480px;
+        width: 100%;
+        background: #1c1c1e;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 28px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0 0 6px;
+      }
+      p {
+        font-size: 13.5px;
+        color: #a1a1aa;
+        line-height: 1.6;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: #a1a1aa;
+        margin: 18px 0 6px;
+      }
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        background: #0b0b0d;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 10px;
+        padding: 10px 12px;
+        color: #fff;
+        font-size: 14px;
+      }
+      button {
+        margin-top: 16px;
+        background: #4b60ff;
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      code {
+        display: block;
+        margin-top: 16px;
+        background: #0b0b0d;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 11.5px;
+        word-break: break-all;
+        color: #8b93ff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Embed preview</h1>
+      <p>
+        This page is <strong>not part of the Zumo app</strong> — it's a plain static HTML file
+        that stands in for "some other website," so you can test a real embedded widget without
+        pasting the script into the app's own <code>index.html</code> (which is intentionally
+        blocked — see console there).
+      </p>
+
+      <label for="widgetId">Widget ID</label>
+      <input id="widgetId" placeholder="e.g. 28774bb8-6fd0-496c-a14d-933b7c30dab7" />
+      <button onclick="loadWidget()">Load widget</button>
+      <code id="snippet"></code>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(location.search)
+      const initial = params.get('widget')
+      if (initial) document.getElementById('widgetId').value = initial
+
+      function loadWidget() {
+        const id = document.getElementById('widgetId').value.trim()
+        if (!id) return
+
+        const url = new URL(location.href)
+        url.searchParams.set('widget', id)
+        history.replaceState(null, '', url)
+
+        document.getElementById('snippet').textContent =
+          `<script src="${location.origin}/widget.js" data-widget-id="${id}" defer><` + `/script>`
+
+        const old = document.getElementById('zumo-embed-script')
+        if (old) old.remove()
+        document.getElementById('Zumo-widget-root')?.remove()
+        document.getElementById('Zumo-widget-styles')?.remove()
+
+        const script = document.createElement('script')
+        script.id = 'zumo-embed-script'
+        script.src = `${location.origin}/widget.js`
+        script.dataset.widgetId = id
+        document.body.appendChild(script)
+      }
+
+      if (initial) loadWidget()
+    </script>
+  </body>
+</html>
