@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: zumo-server
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: IMGHIPPO_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
