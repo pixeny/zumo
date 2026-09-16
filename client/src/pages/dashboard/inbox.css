@@ -5,7 +5,11 @@
   padding: 10px 14px;
   margin-bottom: 16px;
   background: var(--bg-card-glass);
-  border-radius: var(--radius-pill);
+  /* A full pill radius only looks right as a single row — once flex-wrap
+     kicks in on a narrow window, a fully-rounded shape wrapped around two
+     rows reads as broken. A regular rounded-rect radius doesn't have that
+     problem. */
+  border-radius: var(--radius-lg);
   flex-wrap: wrap;
 }
 
@@ -47,7 +51,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  flex: 1;
+  flex: 1 1 200px;
   min-width: 160px;
   padding: 8px 14px;
   border-radius: var(--radius-pill);
@@ -94,10 +98,22 @@
   height: calc(100vh - 190px);
 }
 
+/* Must match the width where VisitorPanel hides itself (visitorPanel.css) —
+   otherwise the grid keeps reserving an empty 280px track for a column with
+   nothing in it, squeezing the list/thread columns for no reason. */
+@media (max-width: 1100px) {
+  .inbox {
+    grid-template-columns: 300px 1fr;
+  }
+}
+
 @media (max-width: 900px) {
   .inbox {
     grid-template-columns: 1fr;
     height: auto;
+  }
+  .inbox-list {
+    height: 320px;
   }
 }
 
