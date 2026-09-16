@@ -597,7 +597,14 @@
 }
 
 .chat-widget--light.chat-panel {
-  background: #fff;
+  /* The dark theme's panel is a near-opaque solid card by design (blur is
+     reserved for floating pills there) — but on white, a flat opaque fill
+     reads as just a plain card with zero "glass" sensation. Making the
+     panel itself translucent + blurred gives light mode the frosted-glass
+     floating feel the launcher pill already has. */
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
 }
 
 .chat-widget--light .chat-launcher__dot {
