@@ -587,24 +587,21 @@
   --bg-glass-secondary: rgba(255, 255, 255, 0.9);
   --gradient-stroke: linear-gradient(
     100deg,
-    rgba(0, 0, 0, 0.16) 0%,
+    rgba(0, 0, 0, 0.22) 0%,
     rgba(0, 0, 0, 0) 22.98%,
     rgba(0, 0, 0, 0) 32.18%,
-    rgba(0, 0, 0, 0.06) 57.46%
+    rgba(0, 0, 0, 0.1) 57.46%
   );
   --shadow-depth-3: 0px 2px 8px -2px rgba(0, 0, 0, 0.06), 0px 4px 12px 0px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0px 8px 24px -4px rgba(0, 0, 0, 0.12), 0px 16px 48px 0px rgba(0, 0, 0, 0.1);
 }
 
 .chat-widget--light.chat-panel {
-  /* The dark theme's panel is a near-opaque solid card by design (blur is
-     reserved for floating pills there) — but on white, a flat opaque fill
-     reads as just a plain card with zero "glass" sensation. Making the
-     panel itself translucent + blurred gives light mode the frosted-glass
-     floating feel the launcher pill already has. */
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  /* Solid, like the dark theme's panel — seeing the host page blur through
+     the main chat surface read as distracting rather than "glassy". The
+     glass feel instead comes from the brighter border ring below plus the
+     soft shadow, the same way the dark theme's opaque cards read as glass. */
+  background: #fff;
 }
 
 .chat-widget--light .chat-launcher__dot {
