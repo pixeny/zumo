@@ -24,7 +24,7 @@ export default function LandingPage() {
       <Footer />
 
       <DemoModal open={demoOpen} onClose={() => setDemoOpen(false)} />
-      {/* <ChatWidget open={chatOpen} onOpenChange={setChatOpen} /> */}
+      <ChatWidget open={chatOpen} onOpenChange={setChatOpen} />
     </div>
   )
 }

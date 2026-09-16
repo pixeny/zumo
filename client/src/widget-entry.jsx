@@ -1,14 +1,21 @@
 import { useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import ChatWidget from './components/chat/ChatWidget'
 // chat.css styles everything in terms of design-token CSS variables
 // (--accent, --bg-glass-tertiary, --radius-lg, --gradient-stroke, ...) and the
 // .glass-border/.glass-pill utility classes — all defined here. The main app
-// gets these for free via index.css, but this is a *standalone* bundle
-// embedded on someone else's site, which never loads that file. Without this
-// import none of those variables exist there, so the widget renders with no
-// colors, no blur, no radius, no glass border — effectively unstyled.
+// gets these for free via index.css (which imports tokens.css BEFORE any
+// component CSS), but this is a *standalone* bundle embedded on someone
+// else's site, which never loads that file on its own.
+//
+// This import must come before the ChatWidget import below: bundlers place
+// CSS in module-discovery order, and tokens.css's ".glass-border { position:
+// relative }" has the same specificity as chat.css's ".chat-launcher {
+// position: fixed }" — whichever rule lands later in the stylesheet wins.
+// Importing tokens.css second (as originally written) put it after chat.css,
+// so it silently overrode the widget's fixed positioning to relative,
+// making it render inline in the page instead of floating in a corner.
 import './styles/tokens.css'
+import ChatWidget from './components/chat/ChatWidget'
 
 // Captured synchronously while this script is executing — document.currentScript
 // is only valid during that window, so grab it now and reuse the reference later.
