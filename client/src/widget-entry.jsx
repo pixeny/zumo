@@ -16,6 +16,17 @@ const THIS_SCRIPT =
   document.currentScript || document.querySelector('script[src*="widget.js"]')
 const WIDGET_ID = THIS_SCRIPT?.dataset?.widgetId || null
 
+// Root-relative asset paths (e.g. Logo's "/logo.png") resolve against the
+// *host page's* origin when embedded on someone else's site, not against
+// where widget.js actually lives — this makes those assets resolve correctly.
+if (THIS_SCRIPT?.src) {
+  try {
+    window.__ZUMO_WIDGET_ORIGIN__ = new URL(THIS_SCRIPT.src).origin
+  } catch {
+    // Ignore malformed script src — components fall back to a relative path.
+  }
+}
+
 // If this script ends up on the Zumo app's own pages (which already render a
 // built-in ChatWidget bottom-right) AND it's carrying a specific widget id —
 // not a bare/default embed — render it bottom-left instead so both are
