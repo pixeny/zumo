@@ -6,9 +6,20 @@ const base = {
   strokeLinejoin: 'round',
 }
 
-function Svg({ size = 18, children, ...rest }) {
+function Svg({ size = 18, children, style, ...rest }) {
+  // Inside a flex container, an <svg> sized only via width/height attributes
+  // (not CSS) can shrink all the way to 0 width — its flex min-width:auto
+  // resolves to a 0 min-content size, so default flex-shrink:1 collapses it
+  // even with no real space pressure. flex-shrink:0 stops that.
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...rest}>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      style={{ flexShrink: 0, ...style }}
+      {...base}
+      {...rest}
+    >
       {children}
     </svg>
   )
