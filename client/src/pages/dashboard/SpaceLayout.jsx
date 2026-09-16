@@ -18,7 +18,8 @@ import './spaces.css'
 export default function SpaceLayout() {
   const { id } = useParams()
   const { profile, user, signOut } = useAuth()
-  const { space, setActiveSpaceId } = useSpace()
+  const { space, setActiveSpaceId, unreadBySpace } = useSpace()
+  const unread = unreadBySpace[id] || 0
   const [expanded, setExpanded] = useState(false)
   const displayName =
     [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') ||
@@ -68,10 +69,17 @@ export default function SpaceLayout() {
               `dash-nav__item ${isActive ? 'dash-nav__item--active' : ''}`
             }
           >
-            <span className="dash-nav__icon" style={{ '--tint': '#3b82f6', color: '#3b82f6' }}>
+            <span
+              className="dash-nav__icon"
+              style={{ '--tint': '#3b82f6', color: '#3b82f6', position: 'relative' }}
+            >
               <IconChatBubble size={14} />
+              {unread > 0 && <span className="dash-nav__badge">{unread > 9 ? '9+' : unread}</span>}
             </span>
             <span className="dash-nav__label">Inbox</span>
+            {unread > 0 && (
+              <span className="dash-nav__label-badge">{unread > 9 ? '9+' : unread}</span>
+            )}
           </NavLink>
           <NavLink
             to={`/dashboard/space/${id}/contacts`}

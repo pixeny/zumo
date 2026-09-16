@@ -1,16 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { useAuth } from '../../lib/AuthContext'
+import { useSpace } from '../../lib/SpaceContext'
 import {
   IconChatBubble,
   IconSearch,
   IconEdit,
   IconSparkles,
+  IconSend,
 } from '../../components/icons/Icon'
 import Select from '../../components/ui/Select'
 import NotesPanel from '../../components/dashboard/NotesPanel'
+import VisitorPanel from '../../components/dashboard/VisitorPanel'
 import CannedResponsesButton from '../../components/dashboard/CannedResponsesButton'
-import { playNotificationSound } from '../../lib/notificationSound'
+import {
+  playNotificationSound,
+  requestNotificationPermission,
+  showBrowserNotification,
+} from '../../lib/notificationSound'
 import '../../components/chat/chat.css'
 import './inbox.css'
 
@@ -23,6 +30,7 @@ const STATUS_OPTIONS = [
 
 export default function ContactCenterPage() {
   const { user, profile } = useAuth()
+  const { clearContactCenterUnread, incrementContactCenterUnread } = useSpace()
   const [status, setStatus] = useState('open')
   const [search, setSearch] = useState('')
   const [conversations, setConversations] = useState([])
@@ -32,6 +40,17 @@ export default function ContactCenterPage() {
   const [notesOpen, setNotesOpen] = useState(false)
   const [widgetNames, setWidgetNames] = useState({})
   const messagesEndRef = useRef(null)
+  const replyTextareaRef = useRef(null)
+  const selectedIdRef = useRef(null)
+
+  useEffect(() => {
+    selectedIdRef.current = selectedId
+  }, [selectedId])
+
+  useEffect(() => {
+    requestNotificationPermission()
+    clearContactCenterUnread()
+  }, [])
 
   useEffect(() => {
     supabase
@@ -50,7 +69,14 @@ export default function ContactCenterPage() {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'conversations' },
         (payload) => {
-          if (payload.eventType === 'INSERT') playNotificationSound('zumo_notif_assigned')
+          if (payload.eventType === 'INSERT') {
+            playNotificationSound('zumo_notif_assigned')
+            showBrowserNotification(
+              'New conversation',
+              `${payload.new.visitor_name || 'A visitor'} started a chat.`
+            )
+            incrementContactCenterUnread()
+          }
           loadConversations()
         }
       )
@@ -58,6 +84,29 @@ export default function ContactCenterPage() {
     return () => supabase.removeChannel(channel)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
+
+  // Workspace-wide message watch, independent of which thread is open — see
+  // the matching comment in SpaceInboxPage.jsx.
+  useEffect(() => {
+    const channel = supabase
+      .channel('contact-center-messages')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        (payload) => {
+          const m = payload.new
+          if (m.sender_type !== 'visitor') return
+          const isOpenThread = m.conversation_id === selectedIdRef.current
+          playNotificationSound('zumo_notif_message')
+          showBrowserNotification('New message', m.body || 'Sent an attachment')
+          if (!isOpenThread || document.visibilityState !== 'visible') {
+            incrementContactCenterUnread()
+          }
+        }
+      )
+      .subscribe()
+    return () => supabase.removeChannel(channel)
+  }, [])
 
   useEffect(() => {
     if (!selectedId) return
@@ -76,7 +125,6 @@ export default function ContactCenterPage() {
           setMessages((prev) =>
             prev.some((m) => m.id === payload.new.id) ? prev : [...prev, payload.new]
           )
-          if (payload.new.sender_type === 'visitor') playNotificationSound('zumo_notif_message')
         }
       )
       .subscribe()
@@ -130,6 +178,7 @@ export default function ContactCenterPage() {
     const body = reply.trim()
     if (!body || !selectedId) return
     setReply('')
+    if (replyTextareaRef.current) replyTextareaRef.current.style.height = 'auto'
     const agentName =
       [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') ||
       profile?.name ||
@@ -243,9 +292,15 @@ export default function ContactCenterPage() {
                     <IconEdit size={12} style={{ marginRight: 4 }} />
                     Notes
                   </button>
-                  <button className="inbox-thread__btn" onClick={() => assignToMe(selected.id)}>
-                    Assign to me
-                  </button>
+                  {selected.assigned_agent_id !== user.id && (
+                    <button
+                      className="pill-btn pill-btn--accent"
+                      style={{ padding: '7px 16px', fontSize: 12.5 }}
+                      onClick={() => assignToMe(selected.id)}
+                    >
+                      {selected.assigned_agent_id ? 'Take over' : 'Assign to me'}
+                    </button>
+                  )}
                   <button
                     className="inbox-thread__btn"
                     onClick={() => closeConversation(selected.id)}
@@ -299,18 +354,41 @@ export default function ContactCenterPage() {
                 <div ref={messagesEndRef} />
               </div>
               {selected.assigned_agent_id === user.id ? (
-                <form className="inbox-thread__composer" onSubmit={handleReply}>
-                  <CannedResponsesButton
-                    onInsert={(body) => setReply((r) => (r ? `${r} ${body}` : body))}
-                  />
-                  <input
-                    placeholder="Reply to visitor…"
-                    value={reply}
-                    onChange={(e) => setReply(e.target.value)}
-                  />
-                  <button className="pill-btn pill-btn--accent" type="submit">
-                    Send
-                  </button>
+                <form className="inbox-thread__composer glass-border" onSubmit={handleReply}>
+                  <div className="inbox-thread__composer-row">
+                    <textarea
+                      ref={replyTextareaRef}
+                      placeholder="Reply to visitor…"
+                      value={reply}
+                      rows={1}
+                      onChange={(e) => {
+                        setReply(e.target.value)
+                        e.target.style.height = 'auto'
+                        e.target.style.height = `${e.target.scrollHeight}px`
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault()
+                          handleReply(e)
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="inbox-thread__composer-toolbar">
+                    <div className="inbox-thread__composer-tools">
+                      <CannedResponsesButton
+                        onInsert={(body) => setReply((r) => (r ? `${r} ${body}` : body))}
+                      />
+                    </div>
+                    <button
+                      className="inbox-thread__composer-send"
+                      type="submit"
+                      disabled={!reply.trim()}
+                    >
+                      Send
+                      <IconSend size={13} />
+                    </button>
+                  </div>
                 </form>
               ) : (
                 <div className="inbox-thread__locked">
@@ -322,6 +400,12 @@ export default function ContactCenterPage() {
             </>
           )}
         </div>
+
+        <VisitorPanel
+          conversation={selected}
+          messageCount={messages.length}
+          widgetName={selected ? widgetNames[selected.widget_id] : null}
+        />
       </div>
     </>
   )

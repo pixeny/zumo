@@ -9,11 +9,17 @@ import {
   IconSettings,
   IconEdit,
   IconSparkles,
+  IconSend,
 } from '../../components/icons/Icon'
 import Select from '../../components/ui/Select'
 import NotesPanel from '../../components/dashboard/NotesPanel'
+import VisitorPanel from '../../components/dashboard/VisitorPanel'
 import CannedResponsesButton from '../../components/dashboard/CannedResponsesButton'
-import { playNotificationSound } from '../../lib/notificationSound'
+import {
+  playNotificationSound,
+  requestNotificationPermission,
+  showBrowserNotification,
+} from '../../lib/notificationSound'
 import '../../components/chat/chat.css'
 import './inbox.css'
 
@@ -26,7 +32,7 @@ const STATUS_OPTIONS = [
 
 export default function SpaceInboxPage() {
   const { id: widgetId } = useParams()
-  const { space } = useSpace()
+  const { space, clearSpaceUnread, incrementSpaceUnread } = useSpace()
   const { user, profile } = useAuth()
   const [status, setStatus] = useState('open')
   const [search, setSearch] = useState('')
@@ -36,6 +42,19 @@ export default function SpaceInboxPage() {
   const [reply, setReply] = useState('')
   const [notesOpen, setNotesOpen] = useState(false)
   const messagesEndRef = useRef(null)
+  const replyTextareaRef = useRef(null)
+  const conversationIdsRef = useRef(new Set())
+  const selectedIdRef = useRef(null)
+
+  useEffect(() => {
+    selectedIdRef.current = selectedId
+  }, [selectedId])
+
+  useEffect(() => {
+    requestNotificationPermission()
+    clearSpaceUnread(widgetId)
+    loadConversationIds()
+  }, [widgetId])
 
   useEffect(() => {
     loadConversations()
@@ -45,7 +64,15 @@ export default function SpaceInboxPage() {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'conversations', filter: `widget_id=eq.${widgetId}` },
         (payload) => {
-          if (payload.eventType === 'INSERT') playNotificationSound('zumo_notif_assigned')
+          if (payload.eventType === 'INSERT') {
+            playNotificationSound('zumo_notif_assigned')
+            showBrowserNotification(
+              'New conversation',
+              `${payload.new.visitor_name || 'A visitor'} started a chat in ${space?.name || 'your space'}.`
+            )
+            incrementSpaceUnread(widgetId)
+            conversationIdsRef.current.add(payload.new.id)
+          }
           loadConversations()
         }
       )
@@ -53,6 +80,32 @@ export default function SpaceInboxPage() {
     return () => supabase.removeChannel(channel)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, widgetId])
+
+  // Widget-wide message watch, independent of which thread is open — this is
+  // what lets a new reply notify/badge even while looking at a different
+  // conversation (or a different browser tab entirely; the socket stays
+  // connected regardless of tab focus, only the visible alert was missing).
+  useEffect(() => {
+    const channel = supabase
+      .channel(`space-messages-${widgetId}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        (payload) => {
+          const m = payload.new
+          if (m.sender_type !== 'visitor') return
+          if (!conversationIdsRef.current.has(m.conversation_id)) return
+          const isOpenThread = m.conversation_id === selectedIdRef.current
+          playNotificationSound('zumo_notif_message')
+          showBrowserNotification('New message', m.body || 'Sent an attachment')
+          if (!isOpenThread || document.visibilityState !== 'visible') {
+            incrementSpaceUnread(widgetId)
+          }
+        }
+      )
+      .subscribe()
+    return () => supabase.removeChannel(channel)
+  }, [widgetId])
 
   useEffect(() => {
     if (!selectedId) return
@@ -68,10 +121,13 @@ export default function SpaceInboxPage() {
           filter: `conversation_id=eq.${selectedId}`,
         },
         (payload) => {
+          // Sound/browser-notification for visitor messages is handled by the
+          // widget-wide watch above (it needs to cover every thread, not just
+          // this one) — this subscription only needs to update the open
+          // thread's message list.
           setMessages((prev) =>
             prev.some((m) => m.id === payload.new.id) ? prev : [...prev, payload.new]
           )
-          if (payload.new.sender_type === 'visitor') playNotificationSound('zumo_notif_message')
         }
       )
       .subscribe()
@@ -91,6 +147,14 @@ export default function SpaceInboxPage() {
     if (status !== 'all') query = query.eq('status', status)
     const { data } = await query
     setConversations(data ?? [])
+  }
+
+  // Kept separate from loadConversations (which is filtered by the visible
+  // status tab) so the widget-wide message watch above still recognizes
+  // conversations that are e.g. closed or on a different status tab.
+  async function loadConversationIds() {
+    const { data } = await supabase.from('conversations').select('id').eq('widget_id', widgetId)
+    conversationIdsRef.current = new Set((data ?? []).map((c) => c.id))
   }
 
   async function loadMessages(id) {
@@ -129,6 +193,7 @@ export default function SpaceInboxPage() {
     const body = reply.trim()
     if (!body || !selectedId) return
     setReply('')
+    if (replyTextareaRef.current) replyTextareaRef.current.style.height = 'auto'
     const agentName =
       [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') ||
       profile?.name ||
@@ -245,9 +310,15 @@ export default function SpaceInboxPage() {
                     <IconEdit size={12} style={{ marginRight: 4 }} />
                     Notes
                   </button>
-                  <button className="inbox-thread__btn" onClick={() => assignToMe(selected.id)}>
-                    Assign to me
-                  </button>
+                  {selected.assigned_agent_id !== user.id && (
+                    <button
+                      className="pill-btn pill-btn--accent"
+                      style={{ padding: '7px 16px', fontSize: 12.5 }}
+                      onClick={() => assignToMe(selected.id)}
+                    >
+                      {selected.assigned_agent_id ? 'Take over' : 'Assign to me'}
+                    </button>
+                  )}
                   <button
                     className="inbox-thread__btn"
                     onClick={() => closeConversation(selected.id)}
@@ -301,18 +372,41 @@ export default function SpaceInboxPage() {
                 <div ref={messagesEndRef} />
               </div>
               {selected.assigned_agent_id === user.id ? (
-                <form className="inbox-thread__composer" onSubmit={handleReply}>
-                  <CannedResponsesButton
-                    onInsert={(body) => setReply((r) => (r ? `${r} ${body}` : body))}
-                  />
-                  <input
-                    placeholder="Reply to visitor…"
-                    value={reply}
-                    onChange={(e) => setReply(e.target.value)}
-                  />
-                  <button className="pill-btn pill-btn--accent" type="submit">
-                    Send
-                  </button>
+                <form className="inbox-thread__composer glass-border" onSubmit={handleReply}>
+                  <div className="inbox-thread__composer-row">
+                    <textarea
+                      ref={replyTextareaRef}
+                      placeholder="Reply to visitor…"
+                      value={reply}
+                      rows={1}
+                      onChange={(e) => {
+                        setReply(e.target.value)
+                        e.target.style.height = 'auto'
+                        e.target.style.height = `${e.target.scrollHeight}px`
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault()
+                          handleReply(e)
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="inbox-thread__composer-toolbar">
+                    <div className="inbox-thread__composer-tools">
+                      <CannedResponsesButton
+                        onInsert={(body) => setReply((r) => (r ? `${r} ${body}` : body))}
+                      />
+                    </div>
+                    <button
+                      className="inbox-thread__composer-send"
+                      type="submit"
+                      disabled={!reply.trim()}
+                    >
+                      Send
+                      <IconSend size={13} />
+                    </button>
+                  </div>
                 </form>
               ) : (
                 <div className="inbox-thread__locked">
@@ -324,6 +418,12 @@ export default function SpaceInboxPage() {
             </>
           )}
         </div>
+
+        <VisitorPanel
+          conversation={selected}
+          messageCount={messages.length}
+          widgetName={space?.name}
+        />
       </div>
     </>
   )

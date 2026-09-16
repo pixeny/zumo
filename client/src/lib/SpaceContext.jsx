@@ -11,6 +11,27 @@ export function SpaceProvider({ children }) {
   )
   const [space, setSpace] = useState(null)
   const [loading, setLoading] = useState(false)
+  // Unread counts for the sidebar's Inbox / Contact Center badges — lives
+  // here (already a top-level provider) so both the inbox pages that
+  // populate it and the layouts that display it can share it.
+  const [unreadBySpace, setUnreadBySpace] = useState({})
+  const [contactCenterUnread, setContactCenterUnread] = useState(0)
+
+  function incrementSpaceUnread(widgetId) {
+    setUnreadBySpace((prev) => ({ ...prev, [widgetId]: (prev[widgetId] || 0) + 1 }))
+  }
+
+  function clearSpaceUnread(widgetId) {
+    setUnreadBySpace((prev) => (prev[widgetId] ? { ...prev, [widgetId]: 0 } : prev))
+  }
+
+  function incrementContactCenterUnread() {
+    setContactCenterUnread((n) => n + 1)
+  }
+
+  function clearContactCenterUnread() {
+    setContactCenterUnread(0)
+  }
 
   useEffect(() => {
     if (!activeSpaceId) {
@@ -48,7 +69,19 @@ export function SpaceProvider({ children }) {
 
   return (
     <SpaceContext.Provider
-      value={{ activeSpaceId, space, loading, setActiveSpaceId, refreshSpace }}
+      value={{
+        activeSpaceId,
+        space,
+        loading,
+        setActiveSpaceId,
+        refreshSpace,
+        unreadBySpace,
+        incrementSpaceUnread,
+        clearSpaceUnread,
+        contactCenterUnread,
+        incrementContactCenterUnread,
+        clearContactCenterUnread,
+      }}
     >
       {children}
     </SpaceContext.Provider>

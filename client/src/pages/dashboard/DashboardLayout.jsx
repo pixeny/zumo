@@ -11,11 +11,13 @@ import {
   IconChatBubble,
 } from '../../components/icons/Icon'
 import { useAuth } from '../../lib/AuthContext'
+import { useSpace } from '../../lib/SpaceContext'
 import ProfileMenu from '../../components/dashboard/ProfileMenu'
 import './dashboard.css'
 
 export default function DashboardLayout() {
   const { profile, user, signOut } = useAuth()
+  const { contactCenterUnread } = useSpace()
   const [expanded, setExpanded] = useState(false)
   const displayName =
     [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') ||
@@ -50,11 +52,21 @@ export default function DashboardLayout() {
                 >
                   <span
                     className="dash-nav__icon"
-                    style={{ '--tint': app.color, color: app.color }}
+                    style={{ '--tint': app.color, color: app.color, position: 'relative' }}
                   >
                     <AppIcon size={14} />
+                    {app.id === 'contact-center' && contactCenterUnread > 0 && (
+                      <span className="dash-nav__badge">
+                        {contactCenterUnread > 9 ? '9+' : contactCenterUnread}
+                      </span>
+                    )}
                   </span>
                   <span className="dash-nav__label">{app.label}</span>
+                  {app.id === 'contact-center' && contactCenterUnread > 0 && (
+                    <span className="dash-nav__label-badge">
+                      {contactCenterUnread > 9 ? '9+' : contactCenterUnread}
+                    </span>
+                  )}
                 </NavLink>
               )
             })}

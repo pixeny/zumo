@@ -89,7 +89,7 @@
 
 .inbox {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 300px 1fr 280px;
   gap: 20px;
   height: calc(100vh - 190px);
 }
@@ -428,27 +428,95 @@
   text-align: center;
 }
 
+/* Gmail-style: a floating card rather than an edge-to-edge bar, so it
+   reads as a distinct compose surface — glass background + a proper
+   toolbar row, not a single-line pill. */
 .inbox-thread__composer {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px;
-  border-top: 1px solid var(--border-soft);
-  background: rgba(255, 255, 255, 0.02);
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 14px 14px;
+  padding: 12px 14px 10px;
+  border-radius: 18px;
+  background: var(--bg-glass-tertiary);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-depth-3);
 }
 
-.inbox-thread__composer input {
+.inbox-thread__composer-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.inbox-thread__composer textarea {
   flex: 1;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  padding: 11px 16px;
+  min-height: 22px;
+  max-height: 140px;
+  resize: none;
+  background: transparent;
+  border: none;
+  padding: 4px 2px;
   color: var(--text);
   font-size: 13.5px;
+  font-family: inherit;
+  line-height: 1.5;
   outline: none;
-  transition: border-color 0.15s ease;
 }
 
-.inbox-thread__composer input:focus {
-  border-color: var(--accent);
+.inbox-thread__composer textarea::placeholder {
+  color: var(--text-faint);
+}
+
+.inbox-thread__composer-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.inbox-thread__composer-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.inbox-thread__composer-tool {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inbox-thread__composer-tool:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-dim);
+}
+
+.inbox-thread__composer-send {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.inbox-thread__composer-send:hover {
+  filter: brightness(1.08);
+}
+
+.inbox-thread__composer-send:disabled {
+  opacity: 0.5;
 }

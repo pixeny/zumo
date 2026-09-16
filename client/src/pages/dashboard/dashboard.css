@@ -160,8 +160,16 @@
   display: none;
 }
 
+.dash-nav__label-badge {
+  display: none;
+}
+
 .dash-sidebar--expanded .dash-nav__label {
   display: inline;
+}
+
+.dash-sidebar--expanded .dash-nav__label-badge {
+  display: inline-block;
 }
 
 .dash-nav__icon {
@@ -199,6 +207,39 @@
 .dash-nav__icon svg {
   position: relative;
   z-index: 1;
+}
+
+.dash-nav__badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 2;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--bg-glass-primary, rgb(28, 28, 30));
+}
+
+.dash-nav__label-badge {
+  margin-left: auto;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 .dash-sidebar__footer {
