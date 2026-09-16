@@ -1,6 +1,14 @@
 import { useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import ChatWidget from './components/chat/ChatWidget'
+// chat.css styles everything in terms of design-token CSS variables
+// (--accent, --bg-glass-tertiary, --radius-lg, --gradient-stroke, ...) and the
+// .glass-border/.glass-pill utility classes — all defined here. The main app
+// gets these for free via index.css, but this is a *standalone* bundle
+// embedded on someone else's site, which never loads that file. Without this
+// import none of those variables exist there, so the widget renders with no
+// colors, no blur, no radius, no glass border — effectively unstyled.
+import './styles/tokens.css'
 
 // Captured synchronously while this script is executing — document.currentScript
 // is only valid during that window, so grab it now and reuse the reference later.
