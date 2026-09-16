@@ -50,6 +50,7 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
   const assistantName = widgetConfig?.assistant_name || brand.assistantName
   const accentColor = widgetConfig?.accent_color || null
   const effectivePosition = widgetConfig?.widget_position || position
+  const effectiveTheme = widgetConfig?.widget_theme || 'dark'
   const widgetStyle = accentColor
     ? { '--accent': accentColor, '--accent-glass': `${accentColor}52` }
     : undefined
@@ -58,7 +59,9 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
     if (!widgetId) return
     supabase
       .from('widgets')
-      .select('assistant_name, persona, accent_color, logo_url, greeting_message, widget_position')
+      .select(
+        'assistant_name, persona, accent_color, logo_url, greeting_message, widget_position, widget_theme'
+      )
       .eq('id', widgetId)
       .maybeSingle()
       .then(({ data }) => data && setWidgetConfig(data))
@@ -246,7 +249,7 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
   if (!open) {
     return (
       <button
-        className={`chat-launcher glass-border ${effectivePosition === 'left' ? 'chat-launcher--left' : ''}`}
+        className={`chat-launcher glass-border ${effectivePosition === 'left' ? 'chat-launcher--left' : ''} ${effectiveTheme === 'light' ? 'chat-widget--light' : ''}`}
         style={widgetStyle}
         onClick={() => onOpenChange(true)}
       >
@@ -274,7 +277,7 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
 
   return (
     <div
-      className={`chat-panel glass-border ${effectivePosition === 'left' ? 'chat-panel--left' : ''}`}
+      className={`chat-panel glass-border ${effectivePosition === 'left' ? 'chat-panel--left' : ''} ${effectiveTheme === 'light' ? 'chat-widget--light' : ''}`}
       style={widgetStyle}
     >
       <div className="chat-panel__topbar">

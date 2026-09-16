@@ -10,13 +10,23 @@ const SAMPLE_MESSAGES = [
 
 // Static, non-interactive replica of ChatWidget's open panel, driven entirely by
 // props instead of Supabase — used to preview unsaved settings changes live.
-export default function WidgetPreview({ assistantName, persona, accentColor, logoUrl, greetingMessage }) {
+export default function WidgetPreview({
+  assistantName,
+  persona,
+  accentColor,
+  logoUrl,
+  greetingMessage,
+  theme = 'dark',
+}) {
   const widgetStyle = accentColor
     ? { '--accent': accentColor, '--accent-glass': `${accentColor}52` }
     : undefined
 
   return (
-    <div className="chat-panel glass-border widget-preview" style={widgetStyle}>
+    <div
+      className={`chat-panel glass-border widget-preview ${theme === 'light' ? 'chat-widget--light' : ''}`}
+      style={widgetStyle}
+    >
       <div className="chat-panel__topbar">
         <div className="chat-panel__brand glass-border">
           <span className="chat-panel__brand-logo">

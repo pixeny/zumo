@@ -26,6 +26,7 @@ const EMPTY = {
   accent_color: '#4b60ff',
   greeting_message: '',
   widget_position: 'right',
+  widget_theme: 'dark',
   assistant_name: 'Nova',
   persona: '',
   system_prompt: '',
@@ -93,6 +94,7 @@ export default function SpaceSettingsPage() {
         accent_color: space.accent_color || '#4b60ff',
         greeting_message: space.greeting_message || '',
         widget_position: space.widget_position || 'right',
+        widget_theme: space.widget_theme || 'dark',
         assistant_name: space.assistant_name || 'Nova',
         persona: space.persona || '',
         system_prompt: space.system_prompt || '',
@@ -277,6 +279,25 @@ export default function SpaceSettingsPage() {
                     </button>
                   </div>
                 </label>
+                <label className="settings-field">
+                  Widget theme
+                  <div className="settings-tabs" style={{ marginTop: 4 }}>
+                    <button
+                      type="button"
+                      className={`settings-tab ${form.widget_theme === 'dark' ? 'settings-tab--active' : ''}`}
+                      onClick={() => update('widget_theme', 'dark')}
+                    >
+                      Dark
+                    </button>
+                    <button
+                      type="button"
+                      className={`settings-tab ${form.widget_theme === 'light' ? 'settings-tab--active' : ''}`}
+                      onClick={() => update('widget_theme', 'light')}
+                    >
+                      Light
+                    </button>
+                  </div>
+                </label>
               </>
             )}
 
@@ -378,6 +399,7 @@ export default function SpaceSettingsPage() {
             accentColor={form.accent_color}
             logoUrl={form.logo_url}
             greetingMessage={form.greeting_message}
+            theme={form.widget_theme}
           />
         </div>
       </form>

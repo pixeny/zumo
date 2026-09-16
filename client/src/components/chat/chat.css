@@ -572,6 +572,83 @@
   margin: 0 auto;
 }
 
+/* Light theme — opt-in per space (Settings → Appearance). Overrides the
+   design-token variables plus every hardcoded white-tint overlay below
+   (rgba(255,255,255,X) on dark → rgba(0,0,0,X) on light) so the whole
+   widget subtree, which is entirely var()-driven or descends from these
+   two root elements, flips consistently. */
+.chat-widget--light {
+  --text: rgba(20, 20, 22, 0.92);
+  --text-dim: rgba(20, 20, 22, 0.64);
+  --text-faint: rgba(20, 20, 22, 0.4);
+  --border: rgba(0, 0, 0, 0.14);
+  --border-soft: rgba(0, 0, 0, 0.08);
+  --bg-glass-tertiary: rgba(255, 255, 255, 0.82);
+  --bg-glass-secondary: rgba(255, 255, 255, 0.9);
+  --gradient-stroke: linear-gradient(
+    100deg,
+    rgba(0, 0, 0, 0.16) 0%,
+    rgba(0, 0, 0, 0) 22.98%,
+    rgba(0, 0, 0, 0) 32.18%,
+    rgba(0, 0, 0, 0.06) 57.46%
+  );
+  --shadow-depth-3: 0px 2px 8px -2px rgba(0, 0, 0, 0.06), 0px 4px 12px 0px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0px 8px 24px -4px rgba(0, 0, 0, 0.12), 0px 16px 48px 0px rgba(0, 0, 0, 0.1);
+}
+
+.chat-widget--light.chat-panel {
+  background: #fff;
+}
+
+.chat-widget--light .chat-launcher__dot {
+  border-color: #fff;
+}
+
+.chat-widget--light .chat-panel__brand,
+.chat-widget--light .chat-panel__minimize,
+.chat-widget--light .chat-panel__composer,
+.chat-widget--light .chat-panel__block-input,
+.chat-widget--light .chat-panel__phone-row,
+.chat-widget--light .chat-feedback__btn {
+  background: rgba(0, 0, 0, 0.045);
+}
+
+.chat-widget--light .chat-panel__minimize:hover,
+.chat-widget--light .chat-feedback__btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.chat-widget--light .chat-panel__identity,
+.chat-widget--light .chat-msg-system,
+.chat-widget--light .chat-panel__phone-code {
+  background: rgba(0, 0, 0, 0.035);
+}
+
+.chat-widget--light .chat-msg--ai,
+.chat-widget--light .chat-msg--agent,
+.chat-widget--light .chat-panel__typing,
+.chat-widget--light .chat-panel__icon-btn {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.chat-widget--light .chat-panel__icon-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.chat-widget--light .chat-panel__messages,
+.chat-widget--light .chat-panel__prechat {
+  scrollbar-color: rgba(0, 0, 0, 0.16) transparent;
+}
+
+.chat-widget--light .chat-panel__messages::-webkit-scrollbar-thumb,
+.chat-widget--light .chat-panel__prechat::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.chat-widget--light .chat-panel__messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.28);
+}
+
 @media (max-width: 460px) {
   .chat-panel {
     right: 16px;
