@@ -2,7 +2,10 @@
   position: relative;
 }
 
-.canned-menu {
+/* Qualified with .canned-btn-wrap for the same reason as profile-menu-wrap
+   and .ui-select above — beats tokens.css's glass-border position:relative
+   regardless of stylesheet order. */
+.canned-btn-wrap .canned-menu {
   position: absolute;
   bottom: calc(100% + 8px);
   left: 0;

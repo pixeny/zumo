@@ -45,7 +45,10 @@
   color: var(--accent);
 }
 
-.ui-select__menu {
+/* Qualified with .ui-select (not just ".ui-select__menu") for the same
+   reason as profile-menu-wrap above — beats tokens.css's glass-border
+   position:relative regardless of stylesheet order. */
+.ui-select .ui-select__menu {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;

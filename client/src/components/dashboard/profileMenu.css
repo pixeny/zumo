@@ -2,7 +2,14 @@
   position: relative;
 }
 
-.profile-menu {
+/* Qualified with the wrapper (not just ".profile-menu") so this always beats
+   tokens.css's ".glass-border { position: relative }" on the same element,
+   regardless of which stylesheet the bundler happens to place last — with
+   equal single-class specificity, source order decided the winner, and it
+   was picking "relative" here. That took this out of overlay positioning
+   entirely: it rendered in normal flow inside the topbar's flex row instead
+   of floating, growing the row and shoving the sidebar/nav visually around it. */
+.profile-menu-wrap .profile-menu {
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
