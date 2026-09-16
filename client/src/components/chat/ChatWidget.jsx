@@ -14,6 +14,7 @@ import {
   IconPlus,
 } from '../icons/Icon'
 import Logo from '../icons/Logo'
+import Select from '../ui/Select'
 import './chat.css'
 
 function storageKeyFor(widgetId) {
@@ -30,6 +31,11 @@ const COUNTRY_CODES = [
   { code: 'UA', dial: '+380' },
   { code: 'RU', dial: '+7' },
 ]
+
+const COUNTRY_CODE_OPTIONS = COUNTRY_CODES.map((c) => ({
+  value: c.dial,
+  label: `${c.code} ${c.dial}`,
+}))
 
 export default function ChatWidget({ open, onOpenChange, widgetId = null, position = 'right' }) {
   const [conversationId, setConversationId] = useState(null)
@@ -347,17 +353,12 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
               />
 
               <div className="chat-panel__phone-row">
-                <select
+                <Select
                   className="chat-panel__phone-code"
                   value={countryDial}
-                  onChange={(e) => setCountryDial(e.target.value)}
-                >
-                  {COUNTRY_CODES.map((c) => (
-                    <option key={c.code} value={c.dial}>
-                      {c.code} {c.dial}
-                    </option>
-                  ))}
-                </select>
+                  options={COUNTRY_CODE_OPTIONS}
+                  onChange={setCountryDial}
+                />
                 <input
                   className="chat-panel__phone-input"
                   placeholder="Phone number"

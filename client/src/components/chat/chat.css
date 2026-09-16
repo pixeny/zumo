@@ -516,18 +516,31 @@
   align-items: stretch;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
-  overflow: hidden;
+  /* Not overflow:hidden — the country-code <Select>'s dropdown menu is an
+     absolutely-positioned descendant and would get clipped by it. The
+     rounded-pill look comes from the trigger's own matching corner radius
+     below plus the input's transparent background instead. */
 }
 
+/* Wraps a <Select> now (was a native <select>) — sizing only, the visual
+   styling below targets its own .ui-select__trigger. */
 .chat-panel__phone-code {
-  border: none;
+  flex-shrink: 0;
+}
+
+.chat-panel__phone-code .ui-select__trigger {
   background: rgba(255, 255, 255, 0.04);
   color: var(--text-dim);
   font-size: 13px;
   font-weight: 600;
   padding: 14px 10px;
-  outline: none;
-  flex-shrink: 0;
+  border-radius: 16px 0 0 16px;
+  height: 100%;
+}
+
+.chat-panel__phone-code .ui-select__trigger:hover,
+.chat-panel__phone-code .ui-select__trigger--open {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .chat-panel__phone-input {
@@ -652,6 +665,28 @@
 
 .chat-widget--light .chat-panel__messages::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.28);
+}
+
+/* The country-code <Select> (client/src/components/ui/Select.jsx) has its
+   own dark-only hardcoded colors (used as-is everywhere else in the dark
+   dashboard) — override them here for the widget's light theme. */
+.chat-widget--light .chat-panel__phone-code .ui-select__trigger {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.chat-widget--light .chat-panel__phone-code .ui-select__trigger:hover,
+.chat-widget--light .chat-panel__phone-code .ui-select__trigger--open {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.chat-widget--light .ui-select__menu {
+  background: #fff;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-soft);
+}
+
+.chat-widget--light .ui-select__option:hover {
+  background: rgba(0, 0, 0, 0.06);
 }
 
 @media (max-width: 460px) {
