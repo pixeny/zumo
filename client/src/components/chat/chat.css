@@ -407,16 +407,20 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.chat-panel__send {
+/* Chained with .chat-panel__icon-btn (not just ".chat-panel__send") so this
+   always wins over that class's own flat gray background regardless of
+   selector/stylesheet order — the same fragile equal-specificity pattern
+   behind several bugs fixed earlier today. */
+.chat-panel__icon-btn.chat-panel__send {
   background: var(--accent);
   color: #fff;
 }
 
-.chat-panel__send:hover {
+.chat-panel__icon-btn.chat-panel__send:hover {
   filter: brightness(1.1);
 }
 
-.chat-panel__send:disabled {
+.chat-panel__icon-btn.chat-panel__send:disabled {
   opacity: 0.5;
 }
 
