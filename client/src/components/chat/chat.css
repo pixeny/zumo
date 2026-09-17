@@ -649,11 +649,19 @@
 .chat-widget--light .chat-msg--ai,
 .chat-widget--light .chat-msg--agent,
 .chat-widget--light .chat-panel__typing,
-.chat-widget--light .chat-panel__icon-btn {
+.chat-widget--light .chat-panel__icon-btn:not(.chat-panel__send) {
   background: rgba(0, 0, 0, 0.05);
 }
 
-.chat-widget--light .chat-panel__icon-btn:hover {
+/* Explicitly excludes .chat-panel__send above (not just relying on rule
+   order) — this selector has the same 2-class specificity as
+   ".chat-panel__icon-btn.chat-panel__send" in the accent-color rule, so
+   without the :not() here, whichever stylesheet ends up compiled later
+   would silently win and the send button would lose its accent-color
+   background in light mode. Same bug class as the non-light version of
+   this button fixed earlier today, just re-appearing via the light-theme
+   override block. */
+.chat-widget--light .chat-panel__icon-btn:not(.chat-panel__send):hover {
   background: rgba(0, 0, 0, 0.08);
 }
 
