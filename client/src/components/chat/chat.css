@@ -710,6 +710,14 @@
   .chat-launcher {
     right: 16px;
     bottom: 16px;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  .chat-launcher__text {
+    display: none;
   }
   .chat-panel--left {
     right: auto;
