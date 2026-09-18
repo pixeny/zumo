@@ -259,18 +259,8 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
         style={widgetStyle}
         onClick={() => onOpenChange(true)}
       >
-        <span
-          className={`chat-launcher__avatar ${widgetConfig?.logo_url ? 'chat-launcher__avatar--has-logo' : ''}`}
-        >
-          {widgetConfig?.logo_url ? (
-            <img
-              src={widgetConfig.logo_url}
-              alt={assistantName}
-              className="chat-launcher__avatar-img"
-            />
-          ) : (
-            <IconSparkles size={17} />
-          )}
+        <span className="chat-launcher__avatar chat-launcher__avatar--has-logo">
+          <Logo size={20} className="chat-launcher__avatar-img" />
           <span className="chat-launcher__dot" />
         </span>
         <span className="chat-launcher__text">
