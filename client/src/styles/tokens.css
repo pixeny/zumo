@@ -19,6 +19,16 @@
     rgba(255, 255, 255, 0) 32.18%,
     rgba(255, 255, 255, 0.12) 57.46%
   );
+  /* Same stops, mirrored to the opposite corner (100deg + 180deg) — swapped in
+     on hover so the glass edge highlight flips sides instead of the card
+     lifting/translating. */
+  --gradient-stroke-hover: linear-gradient(
+    280deg,
+    rgba(255, 255, 255, 0.32) 0%,
+    rgba(255, 255, 255, 0) 22.98%,
+    rgba(255, 255, 255, 0) 32.18%,
+    rgba(255, 255, 255, 0.12) 57.46%
+  );
   --text: rgba(255, 255, 255, 0.92);
   --text-dim: rgba(255, 255, 255, 0.64);
   --text-faint: rgba(255, 255, 255, 0.4);
@@ -62,6 +72,11 @@
     linear-gradient(#fff 0 0) content-box exclude,
     linear-gradient(#fff 0 0);
   pointer-events: none;
+  transition: background 0.35s ease;
+}
+
+.glass-border:hover::before {
+  background: var(--gradient-stroke-hover);
 }
 
 /* Only the floating pills (navbar, CTA capsule) are blurred + more translucent

@@ -142,11 +142,10 @@
   color: inherit;
   width: 100%;
   cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .space-card:hover {
-  transform: translateY(-3px);
   background: var(--bg-card-hover);
 }
 

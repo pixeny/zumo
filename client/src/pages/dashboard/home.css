@@ -10,11 +10,10 @@
   border-radius: 20px;
   padding: 22px;
   color: inherit;
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .home-card:hover {
-  transform: translateY(-3px);
   background: var(--bg-card-hover);
 }
 
