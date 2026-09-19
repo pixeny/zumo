@@ -228,6 +228,29 @@
   flex-shrink: 0;
 }
 
+/* Inside the scrollable messages list, the identity card sticks to the top
+   and lets content glide up underneath it, blurred through a soft fade mask
+   at its bottom edge — the layered "frosted header" look from nairos.com's
+   widget rather than a plain static row above the list. */
+.chat-panel__identity--sticky {
+  position: sticky;
+  top: -4px;
+  z-index: 2;
+  margin: -4px -6px 4px;
+  padding: 18px 20px 26px;
+  border-radius: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(28, 28, 30, 0.94) 0%,
+    rgba(28, 28, 30, 0.94) 65%,
+    rgba(28, 28, 30, 0) 100%
+  );
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+}
+
 .chat-panel__messages {
   flex: 1;
   overflow-y: auto;
@@ -296,6 +319,13 @@
   display: flex;
   gap: 6px;
   padding-left: 2px;
+}
+
+.chat-msg-receipt {
+  display: flex;
+  align-items: center;
+  color: var(--text-faint);
+  padding-right: 2px;
 }
 
 .chat-msg-agent {
@@ -667,6 +697,15 @@
 .chat-widget--light .chat-msg-system,
 .chat-widget--light .chat-panel__phone-code {
   background: rgba(0, 0, 0, 0.035);
+}
+
+.chat-widget--light .chat-panel__identity--sticky {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.94) 0%,
+    rgba(255, 255, 255, 0.94) 65%,
+    rgba(255, 255, 255, 0) 100%
+  );
 }
 
 .chat-widget--light .chat-msg--ai,

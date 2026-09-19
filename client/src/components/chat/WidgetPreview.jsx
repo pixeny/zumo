@@ -1,4 +1,12 @@
-import { IconSparkles, IconPaperclip, IconSend, IconMinus, IconThumbsUp, IconThumbsDown } from '../icons/Icon'
+import {
+  IconSparkles,
+  IconPaperclip,
+  IconSend,
+  IconMinus,
+  IconThumbsUp,
+  IconThumbsDown,
+  IconCheck,
+} from '../icons/Icon'
 import Logo from '../icons/Logo'
 import { brand } from '../../config/brand'
 import './chat.css'
@@ -39,30 +47,29 @@ export default function WidgetPreview({
         </button>
       </div>
 
-      <div className="chat-panel__identity glass-border">
-        <span
-          className={`chat-launcher__avatar ${logoUrl ? 'chat-launcher__avatar--has-logo' : ''}`}
-          style={{ width: 44, height: 44 }}
-        >
-          {logoUrl ? (
-            <img src={logoUrl} alt={assistantName} className="chat-launcher__avatar-img" />
-          ) : (
-            <IconSparkles size={18} />
-          )}
-          <span className="chat-launcher__dot" />
-        </span>
-        <div>
-          <div className="chat-launcher__name">{assistantName || 'Nova'}</div>
-          <div className="chat-launcher__status">{persona || 'Visionary Assistant'}</div>
-        </div>
-      </div>
-
       <div className="chat-panel__messages">
+        <div className="chat-panel__identity chat-panel__identity--sticky glass-border">
+          <span
+            className={`chat-launcher__avatar ${logoUrl ? 'chat-launcher__avatar--has-logo' : ''}`}
+            style={{ width: 44, height: 44 }}
+          >
+            {logoUrl ? (
+              <img src={logoUrl} alt={assistantName} className="chat-launcher__avatar-img" />
+            ) : (
+              <IconSparkles size={18} />
+            )}
+            <span className="chat-launcher__dot" />
+          </span>
+          <div>
+            <div className="chat-launcher__name">{assistantName || 'Nova'}</div>
+            <div className="chat-launcher__status">{persona || 'Visionary Assistant'}</div>
+          </div>
+        </div>
         {greetingMessage && <p className="chat-panel__empty">{greetingMessage}</p>}
         {SAMPLE_MESSAGES.map((m) => (
           <div key={m.id} className={`chat-msg-row chat-msg-row--${m.sender_type}`}>
             <div className={`chat-msg chat-msg--${m.sender_type}`}>{m.body}</div>
-            {m.sender_type !== 'visitor' && (
+            {m.sender_type !== 'visitor' ? (
               <div className="chat-feedback">
                 <button className="chat-feedback__btn" type="button" tabIndex={-1}>
                   <IconThumbsUp size={13} />
@@ -71,6 +78,10 @@ export default function WidgetPreview({
                   <IconThumbsDown size={13} />
                 </button>
               </div>
+            ) : (
+              <span className="chat-msg-receipt">
+                <IconCheck size={11} />
+              </span>
             )}
           </div>
         ))}

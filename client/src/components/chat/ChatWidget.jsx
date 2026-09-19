@@ -12,6 +12,7 @@ import {
   IconThumbsDown,
   IconArrowRightCircle,
   IconPlus,
+  IconCheck,
 } from '../icons/Icon'
 import Logo from '../icons/Logo'
 import Select from '../ui/Select'
@@ -303,29 +304,31 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
         </div>
       </div>
 
-      <div className="chat-panel__identity glass-border">
-        <span
-          className={`chat-launcher__avatar ${widgetConfig?.logo_url ? 'chat-launcher__avatar--has-logo' : ''}`}
-          style={{ width: 44, height: 44 }}
-        >
-          {widgetConfig?.logo_url ? (
-            <img
-              src={widgetConfig.logo_url}
-              alt={assistantName}
-              className="chat-launcher__avatar-img"
-            />
-          ) : (
-            <IconSparkles size={18} />
-          )}
-          <span className="chat-launcher__dot" />
-        </span>
-        <div>
-          <div className="chat-launcher__name">{assistantName}</div>
-          <div className="chat-launcher__status">
-            {widgetConfig?.persona || 'Visionary Assistant'}
+      {!conversationId ? (
+        <div className="chat-panel__identity glass-border">
+          <span
+            className={`chat-launcher__avatar ${widgetConfig?.logo_url ? 'chat-launcher__avatar--has-logo' : ''}`}
+            style={{ width: 44, height: 44 }}
+          >
+            {widgetConfig?.logo_url ? (
+              <img
+                src={widgetConfig.logo_url}
+                alt={assistantName}
+                className="chat-launcher__avatar-img"
+              />
+            ) : (
+              <IconSparkles size={18} />
+            )}
+            <span className="chat-launcher__dot" />
+          </span>
+          <div>
+            <div className="chat-launcher__name">{assistantName}</div>
+            <div className="chat-launcher__status">
+              {widgetConfig?.persona || 'Visionary Assistant'}
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
 
       {!conversationId ? (
         <div className="chat-panel__prechat">
@@ -380,6 +383,29 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
       ) : (
         <>
           <div className="chat-panel__messages">
+            <div className="chat-panel__identity chat-panel__identity--sticky glass-border">
+              <span
+                className={`chat-launcher__avatar ${widgetConfig?.logo_url ? 'chat-launcher__avatar--has-logo' : ''}`}
+                style={{ width: 44, height: 44 }}
+              >
+                {widgetConfig?.logo_url ? (
+                  <img
+                    src={widgetConfig.logo_url}
+                    alt={assistantName}
+                    className="chat-launcher__avatar-img"
+                  />
+                ) : (
+                  <IconSparkles size={18} />
+                )}
+                <span className="chat-launcher__dot" />
+              </span>
+              <div>
+                <div className="chat-launcher__name">{assistantName}</div>
+                <div className="chat-launcher__status">
+                  {widgetConfig?.persona || 'Visionary Assistant'}
+                </div>
+              </div>
+            </div>
             {messages.length === 0 && (
               <p className="chat-panel__empty">
                 {widgetConfig?.greeting_message ||
@@ -411,7 +437,7 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
                     <img className="chat-msg__img" src={m.attachment_url} alt="attachment" />
                   )}
                 </div>
-                {m.sender_type !== 'visitor' && (
+                {m.sender_type !== 'visitor' ? (
                   <div className="chat-feedback">
                     <button
                       className={`chat-feedback__btn ${m.feedback === 'up' ? 'chat-feedback__btn--active' : ''}`}
@@ -430,6 +456,10 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
                       <IconThumbsDown size={13} />
                     </button>
                   </div>
+                ) : (
+                  <span className="chat-msg-receipt">
+                    <IconCheck size={11} />
+                  </span>
                 )}
               </div>
               )
