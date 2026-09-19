@@ -29,7 +29,7 @@ export default function ProfileMenu() {
   return (
     <div className="profile-menu-wrap" ref={ref}>
       <button
-        className="dash-topbar__avatar glass-border"
+        className="dash-topbar__avatar glass-border glass-hover"
         title={displayName}
         onClick={() => setOpen((o) => !o)}
       >

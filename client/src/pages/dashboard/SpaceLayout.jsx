@@ -155,7 +155,7 @@ export default function SpaceLayout() {
         <header className="dash-topbar">
           <Link
             to={`/dashboard/space/${id}/settings`}
-            className="dash-topbar__btn glass-border"
+            className="dash-topbar__btn glass-border glass-hover"
             title="Settings"
           >
             <IconSettings size={16} />

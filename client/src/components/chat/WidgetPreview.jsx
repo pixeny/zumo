@@ -34,7 +34,7 @@ export default function WidgetPreview({
           </span>
           Powered by <strong>{brand.name}</strong>
         </div>
-        <button className="chat-panel__minimize glass-border" type="button" tabIndex={-1}>
+        <button className="chat-panel__minimize glass-border glass-hover" type="button" tabIndex={-1}>
           <IconMinus size={16} />
         </button>
       </div>

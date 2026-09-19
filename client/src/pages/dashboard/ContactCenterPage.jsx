@@ -246,7 +246,7 @@ export default function ContactCenterPage() {
             {filtered.map((c) => (
               <button
                 key={c.id}
-                className={`inbox-item glass-border ${selectedId === c.id ? 'inbox-item--active' : ''}`}
+                className={`inbox-item glass-border glass-hover ${selectedId === c.id ? 'inbox-item--active' : ''}`}
                 onClick={() => setSelectedId(c.id)}
               >
                 <div className="inbox-item__top">

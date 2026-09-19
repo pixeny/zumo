@@ -123,7 +123,7 @@ export default function DashboardLayout() {
         <header className="dash-topbar">
           <Link
             to="/dashboard/workspace/team"
-            className="dash-topbar__btn glass-border"
+            className="dash-topbar__btn glass-border glass-hover"
             title="Team settings"
           >
             <IconSettings size={16} />

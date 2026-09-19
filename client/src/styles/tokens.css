@@ -19,11 +19,8 @@
     rgba(255, 255, 255, 0) 32.18%,
     rgba(255, 255, 255, 0.12) 57.46%
   );
-  /* Same stops as --gradient-stroke, split into an animatable angle (see
-     @property below) plus the two color stops, so .glass-border can smoothly
-     rotate the highlight on hover instead of snapping between two gradients
-     (a background-image transition can't interpolate — it just jump-cuts). */
-  --stroke-angle: 100deg;
+  /* Same two color stops as --gradient-stroke, reused by .glass-border's
+     hover sweep below (see that rule for why they're split out). */
   --stroke-color-1: rgba(255, 255, 255, 0.32);
   --stroke-color-2: rgba(255, 255, 255, 0.12);
   --text: rgba(255, 255, 255, 0.92);
@@ -47,19 +44,15 @@
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Registering --stroke-angle as an <angle> is what makes it transition
-   smoothly frame-by-frame (like a normal animatable property) instead of the
-   browser just swapping the two gradients on the exact frame the class
-   changes. */
-@property --stroke-angle {
-  syntax: '<angle>';
-  inherits: true;
-  initial-value: 100deg;
-}
-
 /* Gradient-stroke "glass" border: a hairline highlight drawn with a mask-excluded
    gradient instead of a flat border color — this is what gives cards their glassy edge.
-   Matches nairos.com's own border-gradient-v2 exactly (100deg, 1.6px). */
+   Matches nairos.com's own border-gradient-v2 exactly (100deg, 1.6px).
+
+   The gradient's background-size is oversized (240% of the box) and its
+   background-position slides on hover — background-position transitions
+   interpolate smoothly frame-by-frame (unlike swapping between two
+   background-image gradients, which just jump-cuts), so the highlight
+   visibly glides across the edge instead of instantly flipping. */
 .glass-border {
   position: relative;
 }
@@ -71,13 +64,15 @@
   z-index: 0;
   border-radius: inherit;
   padding: 1.6px;
-  background: linear-gradient(
-    var(--stroke-angle),
+  background-image: linear-gradient(
+    100deg,
     var(--stroke-color-1) 0%,
     transparent 22.98%,
     transparent 32.18%,
     var(--stroke-color-2) 57.46%
   );
+  background-size: 240% 240%;
+  background-position: 0% 50%;
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box exclude,
     linear-gradient(#fff 0 0);
@@ -85,13 +80,14 @@
     linear-gradient(#fff 0 0) content-box exclude,
     linear-gradient(#fff 0 0);
   pointer-events: none;
-  transition: --stroke-angle 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-position 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Mirrored to the opposite corner (100deg + 180deg) on hover so the glass
-   edge highlight rotates across the card instead of it lifting/translating. */
-.glass-border:hover {
-  --stroke-angle: 280deg;
+/* Opt-in: the sliding sheen only makes sense on things people click —
+   buttons and cards. Sidebars, nav, panels and other structural containers
+   keep the static glass edge from .glass-border with no hover motion. */
+.glass-hover:hover::before {
+  background-position: 100% 50%;
 }
 
 /* Only the floating pills (navbar, CTA capsule) are blurred + more translucent
