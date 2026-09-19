@@ -19,16 +19,13 @@
     rgba(255, 255, 255, 0) 32.18%,
     rgba(255, 255, 255, 0.12) 57.46%
   );
-  /* Same stops, mirrored to the opposite corner (100deg + 180deg) — swapped in
-     on hover so the glass edge highlight flips sides instead of the card
-     lifting/translating. */
-  --gradient-stroke-hover: linear-gradient(
-    280deg,
-    rgba(255, 255, 255, 0.32) 0%,
-    rgba(255, 255, 255, 0) 22.98%,
-    rgba(255, 255, 255, 0) 32.18%,
-    rgba(255, 255, 255, 0.12) 57.46%
-  );
+  /* Same stops as --gradient-stroke, split into an animatable angle (see
+     @property below) plus the two color stops, so .glass-border can smoothly
+     rotate the highlight on hover instead of snapping between two gradients
+     (a background-image transition can't interpolate — it just jump-cuts). */
+  --stroke-angle: 100deg;
+  --stroke-color-1: rgba(255, 255, 255, 0.32);
+  --stroke-color-2: rgba(255, 255, 255, 0.12);
   --text: rgba(255, 255, 255, 0.92);
   --text-dim: rgba(255, 255, 255, 0.64);
   --text-faint: rgba(255, 255, 255, 0.4);
@@ -50,6 +47,16 @@
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/* Registering --stroke-angle as an <angle> is what makes it transition
+   smoothly frame-by-frame (like a normal animatable property) instead of the
+   browser just swapping the two gradients on the exact frame the class
+   changes. */
+@property --stroke-angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 100deg;
+}
+
 /* Gradient-stroke "glass" border: a hairline highlight drawn with a mask-excluded
    gradient instead of a flat border color — this is what gives cards their glassy edge.
    Matches nairos.com's own border-gradient-v2 exactly (100deg, 1.6px). */
@@ -64,7 +71,13 @@
   z-index: 0;
   border-radius: inherit;
   padding: 1.6px;
-  background: var(--gradient-stroke);
+  background: linear-gradient(
+    var(--stroke-angle),
+    var(--stroke-color-1) 0%,
+    transparent 22.98%,
+    transparent 32.18%,
+    var(--stroke-color-2) 57.46%
+  );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box exclude,
     linear-gradient(#fff 0 0);
@@ -72,11 +85,13 @@
     linear-gradient(#fff 0 0) content-box exclude,
     linear-gradient(#fff 0 0);
   pointer-events: none;
-  transition: background 0.35s ease;
+  transition: --stroke-angle 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-border:hover::before {
-  background: var(--gradient-stroke-hover);
+/* Mirrored to the opposite corner (100deg + 180deg) on hover so the glass
+   edge highlight rotates across the card instead of it lifting/translating. */
+.glass-border:hover {
+  --stroke-angle: 280deg;
 }
 
 /* Only the floating pills (navbar, CTA capsule) are blurred + more translucent
