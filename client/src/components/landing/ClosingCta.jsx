@@ -18,7 +18,7 @@ export default function ClosingCta({ onOpenDemo, onOpenChat }) {
               Request a Demo
             </button>
             <span className="cta-divider" />
-            <button className="pill-btn pill-btn--assistant glass-border glass-hover" onClick={onOpenChat}>
+            <button className="pill-btn pill-btn--assistant glass-border" onClick={onOpenChat}>
               <span className="pill-btn__avatar">
                 <IconSparkles size={12} />
               </span>

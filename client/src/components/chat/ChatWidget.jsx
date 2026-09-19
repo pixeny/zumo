@@ -255,7 +255,7 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
   if (!open) {
     return (
       <button
-        className={`chat-launcher glass-border glass-hover ${effectivePosition === 'left' ? 'chat-launcher--left' : ''} ${effectiveTheme === 'light' ? 'chat-widget--light' : ''}`}
+        className={`chat-launcher glass-border ${effectivePosition === 'left' ? 'chat-launcher--left' : ''} ${effectiveTheme === 'light' ? 'chat-widget--light' : ''}`}
         style={widgetStyle}
         onClick={() => onOpenChange(true)}
       >
@@ -286,7 +286,7 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
         <div style={{ display: 'flex', gap: 6 }}>
           {conversationId && (
             <button
-              className="chat-panel__minimize glass-border glass-hover"
+              className="chat-panel__minimize glass-border"
               onClick={handleLeaveConversation}
               title="Leave this chat and start a new one"
             >
@@ -294,7 +294,7 @@ export default function ChatWidget({ open, onOpenChange, widgetId = null, positi
             </button>
           )}
           <button
-            className="chat-panel__minimize glass-border glass-hover"
+            className="chat-panel__minimize glass-border"
             onClick={() => onOpenChange(false)}
             title="Minimize"
           >

@@ -47,7 +47,7 @@ export default function SpacesPage() {
       </div>
 
       <div className="spaces-grid">
-        <button className="space-card space-card--create glass-border glass-hover" onClick={() => setShowCreate(true)}>
+        <button className="space-card space-card--create glass-border" onClick={() => setShowCreate(true)}>
           <span className="space-card__plus">
             <IconPlus size={16} />
           </span>
@@ -56,7 +56,7 @@ export default function SpacesPage() {
         </button>
 
         {spaces.map((s) => (
-          <div key={s.id} className="space-card glass-border glass-hover" onClick={() => enterSpace(s.id)}>
+          <div key={s.id} className="space-card glass-border" onClick={() => enterSpace(s.id)}>
             <button
               className="space-card__menu"
               onClick={(e) => {

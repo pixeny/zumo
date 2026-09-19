@@ -35,7 +35,7 @@ export default function DashboardHome() {
         {CARDS.map((c) => {
           const AppIcon = APP_ICONS[c.id]
           return (
-            <Link to={`/dashboard/workspace/${c.id}`} className="home-card glass-border glass-hover" key={c.id}>
+            <Link to={`/dashboard/workspace/${c.id}`} className="home-card glass-border" key={c.id}>
               <span
                 className="home-card__icon"
                 style={{ background: `${c.color}26`, color: c.color }}

@@ -86,7 +86,7 @@ export default function SpaceHome() {
 
       <div className="home-grid">
         {CARDS.map((c) => (
-          <Link to={c.href(id)} className="home-card glass-border glass-hover" key={c.id}>
+          <Link to={c.href(id)} className="home-card glass-border" key={c.id}>
             <span className="home-card__icon" style={{ background: `${c.color}26`, color: c.color }}>
               <c.Icon size={20} />
             </span>
